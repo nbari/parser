@@ -35,6 +35,29 @@ func (p *Parser) Parse() error {
 					placeHolder = ""
 					variable = ""
 					continue
+				default:
+					if !inLoop {
+						if strings.HasSuffix(word, p.Delimeter) {
+							variable = strings.Replace(word, "$", "", -1)
+							if k, ok := p.Variables[variable]; ok {
+								word = k.(string)
+							} else {
+								return fmt.Errorf("Could not found variable %q, on line %d please verify the variables file", variable, lineNum)
+							}
+						} else {
+							for k, c := range word[1:] {
+								if string(c) == p.Delimeter {
+									variable = strings.Replace(word[:k+1], "$", "", -1)
+									if k, ok := p.Variables[variable]; ok {
+										// TODO
+										word = k.(string) + word[7:]
+									} else {
+										return fmt.Errorf("Could not found variable %q, on line %d please verify the variables file", variable, lineNum)
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 			if inLoop {
@@ -74,7 +97,10 @@ func (p *Parser) Parse() error {
 					}
 				}
 			}
+			// No loop
+			fmt.Print(word, " ")
 		}
+		println()
 	}
 	return nil
 }

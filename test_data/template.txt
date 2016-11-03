@@ -1,5 +1,5 @@
 A b c $hello$!
-The quick brown $unit_type$ jumps over the lazy dog
+The quick brown $unit_type$ likes:
 $for frut in fruit$
 - $frut$
 $endfor$
