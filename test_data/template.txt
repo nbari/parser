@@ -1,6 +1,6 @@
-Thank you for applying to $company_name$!
-You have a warm welcome to our $unit_type$ to work with these technologies:
-$for tech in technologies$
-- $tech$
+A b c $hello$!
+The quick brown $unit_type$ jumps over the lazy dog
+$for frut in fruit$
+- $frut$
 $endfor$
 $footer_quote$

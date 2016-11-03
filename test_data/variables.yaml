@@ -1,10 +1,9 @@
-company_name: Magine
-unit_type: team
-technologies:
-  - Ansible
-  - Consul
-  - Mesos
-  - Python
+hello: Hola
+unit_type: Fox
+fruit:
+  - apple
+  - orange
+  - banana
 footer_quote: |
   Whenever you are asked if you can do a job,
   tell them, 'Certainly I can!'. Then get busy and find out how to do it.
