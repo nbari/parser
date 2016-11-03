@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// Parse
+// Parse parse the template
 func (p *Parser) Parse() (string, error) {
 	s := bufio.NewScanner(p.template)
 	var (
