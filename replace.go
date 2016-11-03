@@ -15,7 +15,7 @@ func (p *Parser) Replace(word string) (string, error) {
 	return "", fmt.Errorf("Variable not found")
 }
 
-// FindMatch clean the placeholder in order to try to find a match and replace
+// Render clean the placeholder in order to try to find a match and replace
 // the word with defined variable
 func (p *Parser) Render(word string, lineNum int) (string, error) {
 	if strings.HasSuffix(word, p.Delimeter) {
