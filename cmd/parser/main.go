@@ -35,8 +35,9 @@ func main() {
 	}
 	defer p.CloseTemplate()
 
-	err = p.Parse()
+	out, err := p.Parse()
 	if err != nil {
 		exit1(err)
 	}
+	fmt.Printf("out = %+v\n", out)
 }

@@ -2,20 +2,24 @@ package parser
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"strings"
 )
 
-func (p *Parser) Parse() error {
+// Parse
+func (p *Parser) Parse() (string, error) {
 	s := bufio.NewScanner(p.template)
-	//	var buf []string
 	var (
+		buffer      bytes.Buffer
+		err         error
 		inLoop      bool
 		inLoopBody  bool
-		position    int
-		placeHolder string
-		variable    string
+		lineBuffer  []string
 		lineNum     int
+		placeHolder string
+		position    int
+		variable    string
 	)
 
 	for s.Scan() {
@@ -38,46 +42,46 @@ func (p *Parser) Parse() error {
 				default:
 					if !inLoop {
 						if strings.HasSuffix(word, p.Delimeter) {
-							variable = strings.Replace(word, "$", "", -1)
-							if k, ok := p.Variables[variable]; ok {
-								word = k.(string)
-							} else {
-								return fmt.Errorf("Could not found variable %q, on line %d please verify the variables file", variable, lineNum)
+							word, err = p.Replace(word, lineNum)
+							if err != nil {
+								return "", err
 							}
 						} else {
 							for k, c := range word[1:] {
 								if string(c) == p.Delimeter {
-									variable = strings.Replace(word[:k+1], "$", "", -1)
-									if k, ok := p.Variables[variable]; ok {
-										// TODO
-										word = k.(string) + word[7:]
-									} else {
-										return fmt.Errorf("Could not found variable %q, on line %d please verify the variables file", variable, lineNum)
+									reminder := word[k+2:]
+									w, err := p.Replace(word[:k+1], lineNum)
+									if err != nil {
+										return "", err
 									}
+									word = w + reminder
 								}
 							}
 						}
+						lineBuffer = append(lineBuffer, word)
 					}
+					continue
 				}
 			}
+			// For block
 			if inLoop {
 				if !inLoopBody {
 					switch position {
 					case 0:
 						if strings.HasPrefix(word, p.Delimeter) && strings.HasSuffix(word, p.Delimeter) {
-							return fmt.Errorf("Error parsing template, please verify the syntax on line %d", lineNum)
+							return "", fmt.Errorf("Error parsing template, please verify the syntax on line %d", lineNum)
 						}
 						placeHolder = fmt.Sprintf("%s%s%s", p.Delimeter, word, p.Delimeter)
 					case 1:
 						if word != "in" {
-							return fmt.Errorf("Error parsing template, please verify the syntax on line %d", lineNum)
+							return "", fmt.Errorf("Error parsing template, please verify the syntax on line %d", lineNum)
 						}
 					case 2:
 						if strings.HasPrefix(word, p.Delimeter) {
-							return fmt.Errorf("Error parsing template, please verify the syntax on line %d", lineNum)
+							return "", fmt.Errorf("Error parsing template, please verify the syntax on line %d", lineNum)
 						}
 						if !strings.HasSuffix(word, p.Delimeter) {
-							return fmt.Errorf("Error parsing template, please verify the syntax on line %d", lineNum)
+							return "", fmt.Errorf("Error parsing template, please verify the syntax on line %d", lineNum)
 						}
 						variable = strings.Replace(word, "$", "", -1)
 						inLoopBody = true
@@ -88,19 +92,21 @@ func (p *Parser) Parse() error {
 						// loop Body
 						if k, ok := p.Variables[variable]; ok {
 							for _, v := range k.([]interface{}) {
-								fmt.Println(strings.Replace(line, placeHolder, v.(string), -1))
+								ln := fmt.Sprintf("%s\n", strings.Replace(line, placeHolder, v.(string), -1))
+								buffer.WriteString(ln)
 							}
 						}
 						inLoopBody = false
 					} else {
-						return fmt.Errorf("xx  Error parsing template, please verify the syntax on line %d", lineNum)
+						return "", fmt.Errorf("Error parsing template, please verify the syntax on line %d", lineNum)
 					}
 				}
+			} else {
+				lineBuffer = append(lineBuffer, word)
 			}
-			// No loop
-			fmt.Print(word, " ")
 		}
-		println()
+		buffer.WriteString(fmt.Sprintf("%s\n", strings.Join(lineBuffer, " ")))
+		lineBuffer = []string{}
 	}
-	return nil
+	return buffer.String(), nil
 }
