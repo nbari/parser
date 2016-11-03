@@ -17,7 +17,7 @@ clean:
 	@rm -rf ${BIN_NAME} *.out build
 
 test: get
-	${GO} test -race -v
+	${GO} test -v
 
 cover:
 	${GO} test -cover && \
