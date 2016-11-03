@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/nbari/parser.svg?branch=master)](https://travis-ci.org/nbari/parser)
+[![Go Report Card](https://goreportcard.com/badge/github.com/nbari/parser)](https://goreportcard.com/report/github.com/nbari/parser)
+
 # parser
 
 Parse a template using variables in a yaml file
