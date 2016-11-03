@@ -55,18 +55,12 @@ func (p *Parser) Parse() (string, error) {
 				if !inLoopBody {
 					switch position {
 					case 0:
-						if strings.HasPrefix(word, p.Delimeter) && strings.HasSuffix(word, p.Delimeter) {
-							return "", fmt.Errorf("Error parsing template, please verify the syntax on line %d", lineNum)
-						}
 						placeHolder = fmt.Sprintf("%s%s%s", p.Delimeter, word, p.Delimeter)
 					case 1:
 						if word != "in" {
 							return "", fmt.Errorf("Error parsing template, please verify the syntax on line %d", lineNum)
 						}
 					case 2:
-						if strings.HasPrefix(word, p.Delimeter) {
-							return "", fmt.Errorf("Error parsing template, please verify the syntax on line %d", lineNum)
-						}
 						if !strings.HasSuffix(word, p.Delimeter) {
 							return "", fmt.Errorf("Error parsing template, please verify the syntax on line %d", lineNum)
 						}
