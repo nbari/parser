@@ -39,5 +39,5 @@ func main() {
 	if err != nil {
 		exit1(err)
 	}
-	fmt.Printf("out = %+v\n", out)
+	fmt.Println(out)
 }

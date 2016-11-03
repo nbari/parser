@@ -83,7 +83,7 @@ func (p *Parser) Parse() (string, error) {
 						if !strings.HasSuffix(word, p.Delimeter) {
 							return "", fmt.Errorf("Error parsing template, please verify the syntax on line %d", lineNum)
 						}
-						variable = strings.Replace(word, "$", "", -1)
+						variable = strings.Replace(word, p.Delimeter, "", -1)
 						inLoopBody = true
 					}
 					position++
@@ -105,8 +105,10 @@ func (p *Parser) Parse() (string, error) {
 				lineBuffer = append(lineBuffer, word)
 			}
 		}
-		buffer.WriteString(fmt.Sprintf("%s\n", strings.Join(lineBuffer, " ")))
-		lineBuffer = []string{}
+		if !inLoop && len(lineBuffer) > 0 {
+			buffer.WriteString(fmt.Sprintf("%s\n", strings.Join(lineBuffer, " ")))
+		}
+		lineBuffer = nil
 	}
 	return buffer.String(), nil
 }
