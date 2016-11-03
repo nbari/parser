@@ -8,12 +8,14 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// Parser struct
 type Parser struct {
 	template  *os.File
 	Variables map[string]interface{}
 	Delimeter string
 }
 
+// New returns a Parser
 func New(t, v string) (*Parser, error) {
 	// read variables first
 	ymlFile, err := ioutil.ReadFile(v)
@@ -37,6 +39,7 @@ func New(t, v string) (*Parser, error) {
 	}, nil
 }
 
+// CloseTemplate closes os.File
 func (p *Parser) CloseTemplate() {
 	p.template.Close()
 }

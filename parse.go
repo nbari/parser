@@ -41,22 +41,9 @@ func (p *Parser) Parse() (string, error) {
 					continue
 				default:
 					if !inLoop {
-						if strings.HasSuffix(word, p.Delimeter) {
-							word, err = p.Replace(word, lineNum)
-							if err != nil {
-								return "", err
-							}
-						} else {
-							for k, c := range word[1:] {
-								if string(c) == p.Delimeter {
-									reminder := word[k+2:]
-									w, err := p.Replace(word[:k+1], lineNum)
-									if err != nil {
-										return "", err
-									}
-									word = w + reminder
-								}
-							}
+						word, err = p.Render(word, lineNum)
+						if err != nil {
+							return "", err
 						}
 						lineBuffer = append(lineBuffer, word)
 					}
@@ -105,10 +92,12 @@ func (p *Parser) Parse() (string, error) {
 				lineBuffer = append(lineBuffer, word)
 			}
 		}
-		if !inLoop && len(lineBuffer) > 0 {
+
+		if lineBuffer != nil {
 			buffer.WriteString(fmt.Sprintf("%s\n", strings.Join(lineBuffer, " ")))
+			lineBuffer = nil
 		}
-		lineBuffer = nil
+
 	}
 	return buffer.String(), nil
 }
