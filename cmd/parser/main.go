@@ -13,13 +13,21 @@ func exit1(err error) {
 	os.Exit(1)
 }
 
+var version string
+
 func main() {
 	var (
-		t = flag.String("t", "", "`template` file to parse")
-		v = flag.String("v", "", "`variables` file to use")
+		t  = flag.String("t", "", "`template` file to parse")
+		v  = flag.String("v", "", "`variables` file to use")
+		vv = flag.Bool("version", false, fmt.Sprintf("Print version: %s", version))
 	)
 
 	flag.Parse()
+
+	if *vv {
+		fmt.Printf("%s\n", version)
+		os.Exit(0)
+	}
 
 	if *t == "" {
 		exit1(fmt.Errorf("Missing template, use (\"%s -h\") for help.\n", os.Args[0]))
