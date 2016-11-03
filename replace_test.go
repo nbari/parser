@@ -56,12 +56,16 @@ func TestRender(t *testing.T) {
 		{"$one$", "uno"},
 		{"two$", "dos"},
 		{"three$=drei!", "tres=drei!"},
+		{"err$", ""},
+		{"err$!", ""},
 	}
 
 	for k, tt := range testTable {
 		w, err := parser.Render(tt.Var, k)
 		if err != nil {
-			t.Error(err)
+			if tt.Var != "err$" && tt.Var != "err$!" {
+				t.Error(err)
+			}
 		}
 		if tt.Expected != w {
 			t.Fatalf("%s != %s", tt.Expected, w)
