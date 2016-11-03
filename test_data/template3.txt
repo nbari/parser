@@ -1,0 +1,7 @@
+A b c $hello$!
+The $quick brown $unit_type$ likes:
+$endfor$
+$for frut in fruit$
+- $$frut$
+$endfor$
+$footer_quote$
