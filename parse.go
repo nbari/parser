@@ -10,16 +10,14 @@ import (
 // Parse parse the template
 func (p *Parser) Parse() (string, error) {
 	var (
-		out    bytes.Buffer
-		buf    bytes.Buffer
-		useBuf bool
-		//	err error
+		out          bytes.Buffer
+		buf          bytes.Buffer
 		inLoop       bool
-		inLoopBody   bool
 		lineNum      int = 1
+		loopVariable string
 		placeHolder  string
 		position     int
-		loopVariable string
+		useBuf       bool
 	)
 
 	scanner := bufio.NewScanner(p.template)
@@ -27,11 +25,10 @@ func (p *Parser) Parse() (string, error) {
 
 	for scanner.Scan() {
 		c := scanner.Text()
-		// handle for loop
 		switch c {
 		case "\n":
 			lineNum++
-			if inLoopBody {
+			if inLoop && position == 3 {
 				line := buf.String()
 				buf.Reset()
 				if strings.Contains(line, placeHolder) {
@@ -47,7 +44,13 @@ func (p *Parser) Parse() (string, error) {
 							buf.WriteString(ln)
 						}
 					}
+				} else if len(line) > 0 {
+					return "", fmt.Errorf("Error parsing template, please verify the syntax on line %d", lineNum)
 				}
+			} else if inLoop && position == 4 {
+				// to avoid the extra line
+				inLoop = false
+				position = 0
 			} else {
 				buf.WriteString(c)
 			}
@@ -56,10 +59,11 @@ func (p *Parser) Parse() (string, error) {
 			buf.Reset()
 		case p.Delimeter:
 			buf.WriteString(c)
-			if useBuf && position == 2 {
-				position = 0
+			if useBuf && position == 1 {
+				return "", fmt.Errorf("Error parsing template, please verify the syntax on line %d", lineNum)
+			} else if useBuf && position == 2 {
+				position++
 				loopVariable = strings.Replace(buf.String(), p.Delimeter, "", -1)
-				inLoopBody = true
 				buf.Reset()
 				continue
 			} else if useBuf && len(buf.String()) == 2 {
@@ -76,12 +80,15 @@ func (p *Parser) Parse() (string, error) {
 				}
 				out.WriteString(str)
 			} else if buf.String() == "$endfor$" {
-				fmt.Printf("buf.String() = %+v\n", buf.String())
+				position++
+				buf.Reset()
+				// loop again but don't add extra line
+				continue
 			} else {
 				useBuf = true
 			}
 		default:
-			if inLoopBody {
+			if inLoop && position == 3 {
 				buf.WriteString(c)
 			} else if useBuf {
 				buf.WriteString(c)
@@ -119,6 +126,5 @@ func (p *Parser) Parse() (string, error) {
 			}
 		}
 	}
-	fmt.Println(placeHolder, loopVariable)
 	return out.String(), nil
 }
