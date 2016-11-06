@@ -2,14 +2,9 @@
 [![codecov](https://codecov.io/gh/nbari/parser/branch/master/graph/badge.svg)](https://codecov.io/gh/nbari/parser)
 [![Go Report Card](https://goreportcard.com/badge/github.com/nbari/parser)](https://goreportcard.com/report/github.com/nbari/parser)
 
-# (naive) parser
+# parser
 
 Parse a template using variables in a yaml file
-
-This implementation ignores extra position "spaces" and line brakes is parsing
-by strings not by bytes therefore the output may deffer with the original format
-of the input.
-
 
 
 Usage:

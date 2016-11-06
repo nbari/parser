@@ -10,7 +10,7 @@ func (p *Parser) Replace(word string) (string, error) {
 	v := strings.Replace(word, p.Delimeter, "", -1)
 	k, ok := p.Variables[v]
 	if ok {
-		return k.(string), nil
+		return fmt.Sprintf("%v", k), nil
 	}
 	return "", fmt.Errorf("Variable not found")
 }
