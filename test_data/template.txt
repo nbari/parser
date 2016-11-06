@@ -4,10 +4,16 @@ o
 el $dolar si i$$$$$
 
 $ok$ $$ $$$
+$ok$ok$
+$ok$ ok
 
 
 The quick brown $unit_type$ likes:
+
+$for$ test
+
 $for frut in fruit$
+- $frut$
 - $frut$
 $endfor$
 
@@ -20,4 +26,3 @@ the $dolar sign$
 $$ $$ $$$
 
 $ok$ok$
-$ok$ ok
