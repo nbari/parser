@@ -17,13 +17,38 @@ func TestParser1(t *testing.T) {
 	}
 
 	expected := `A b c Hola!
+o
+
+el $dolar si i$$$$$
+
+100 $$ $$$
+100ok$
+100 ok
+
+
 The quick brown Fox likes:
+
+loop test
+
 - apple
 - orange
 - banana
+- apple
+- orange
+- banana
+
 Whenever you are asked if you can do a job,
 tell them, 'Certainly I can!'. Then get busy and find out how to do it.
-- Theodore Roosevelt`
+- Theodore Roosevelt
+
+
+1   2 3    4
+
+the $dolar sign$
+
+$$ $$ $$$
+
+100ok$`
 
 	if strings.TrimSpace(expected) != strings.TrimSpace(out) {
 		t.Error("not matching")
@@ -46,6 +71,7 @@ The $quick brown Fox likes:
 - $apple
 - $orange
 - $banana
+
 Whenever you are asked if you can do a job,
 tell them, 'Certainly I can!'. Then get busy and find out how to do it.
 - Theodore Roosevelt`
@@ -61,22 +87,9 @@ func TestParser3(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	out, err := p.Parse()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	expected := `A b c Hola!
-The $quick brown Fox likes:
-- $apple
-- $orange
-- $banana
-Whenever you are asked if you can do a job,
-tell them, 'Certainly I can!'. Then get busy and find out how to do it.
-- Theodore Roosevelt`
-
-	if strings.TrimSpace(expected) != strings.TrimSpace(out) {
-		t.Error("not matching")
+	_, err = p.Parse()
+	if err == nil {
+		t.Error("Expecting error")
 	}
 }
 

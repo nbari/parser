@@ -9,12 +9,14 @@ $ok$ ok
 
 
 The quick brown $unit_type$ likes:
-
-$for$ test
-
 $for frut in fruit$
 - $frut$
 - $frut$
+$endfor$
+
+second loop:
+$for frut in fruit$
+- $frut$ $--
 $endfor$
 
 $footer_quote$
