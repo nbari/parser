@@ -10,7 +10,7 @@ get:
 	${GO} get
 
 build: get
-#	${GO} get -u gopkg.in/yaml.v2;
+	${GO} get -u gopkg.in/yaml.v2;
 	${GO} build -ldflags "-X main.version=${VERSION}" -o ${BIN_NAME} cmd/parser/main.go;
 
 clean:
